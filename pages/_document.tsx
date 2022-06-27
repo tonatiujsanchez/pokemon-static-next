@@ -16,6 +16,7 @@ class MyDocument extends Document {
             <Html lang="es">
                 <Head>
                     {CssBaseline.flush()}
+                    <link rel="icon" href="/pokebola.png" />
                 </Head>
                 <body>
                     <Main />
