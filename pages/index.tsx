@@ -25,7 +25,6 @@ const Home: NextPage<Props> = ({ pokemons }) => {
                             </Grid>
                         ))
                     }
-
                 </Grid.Container>
             </div>
         </Layout>

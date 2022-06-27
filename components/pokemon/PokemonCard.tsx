@@ -9,7 +9,7 @@ export const PokemonCard: FC<SmallPokemon> = ({ id, name, img, url }) => {
 
     const router =  useRouter()
 
-    const onPress = () => {
+    const mouseEventHandler = () => {        
         router.push(`/pokemon/${id}`)
     }
 
@@ -55,7 +55,7 @@ export const PokemonCard: FC<SmallPokemon> = ({ id, name, img, url }) => {
                                 auto 
                                 rounded 
                                 css={{ backgroundColor: '#FECA1B' }}
-                                onPress={onPress} >
+                                onPress={mouseEventHandler} >
                                 <Text
                                     css={{ color: "#000399" }}
                                     size={12}
