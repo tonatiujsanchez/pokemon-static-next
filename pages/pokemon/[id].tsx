@@ -1,11 +1,15 @@
+import { useEffect, useState } from "react";
+
 import { GetStaticProps, GetStaticPaths, NextPage } from "next"
+import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
+
+import confetti from 'canvas-confetti'
+
 
 import { Layout } from "../../components/layouts"
-
-import { pokeApi } from "../../api"
-
 import { Pokemon } from "../../interfaces"
-import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
+import { pokeApi } from "../../api"
+import { localFavorites } from "../../utils";
 
 
 
@@ -16,11 +20,35 @@ interface Props {
 
 const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 
-    console.log(pokemon);
+    const [isFavorite, setIsFavorite] = useState<boolean>( false )
+    
+    useEffect(()=>{
+        setIsFavorite(localFavorites.pokemonIsFavorite( pokemon.id ))
+    },[])
+    
+    
+    const onToggleFavorite = () => {
+        localFavorites.toogleFavorites ( pokemon.id )
+        setIsFavorite(!isFavorite)
 
+        if(!isFavorite){
+            confetti({
+                zIndex: 999,
+                spread: 127,
+                angle: -150,
+                particleCount: Math.floor(200 * 3),
+                origin:{
+                    x: 1,
+                    y: 0
+                },
+                decay: 0.92,
+                scalar: 1
+            })
+        }
+    }
 
     return (
-        <Layout>
+        <Layout title={ pokemon.name } >
             <Grid.Container css={{ marginTop: '5px' }} gap={2}>
                 <Grid xs={12} sm={4}>
                     <Card isHoverable css={{ padding: '30px' }}>
@@ -40,8 +68,11 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                     <Card>
                         <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Text h1 transform="capitalize">{pokemon.name}</Text>
-                            <Button color="gradient" ghost>
-                                Guardar en favoritos
+                            <Button
+                                ghost={ !isFavorite }
+                                onPress={onToggleFavorite} 
+                                color="gradient">
+                                { !isFavorite ? 'Guardar en favoritos' : 'Remover de favoritos' }
                             </Button>
                         </Card.Header>
                         <Card.Body>
