@@ -1,24 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { GetStaticProps, GetStaticPaths, NextPage } from "next"
-import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
+import { Button, Card, Container, Grid, Text, Image } from '@nextui-org/react';
+import { NextPage, GetStaticPaths, GetStaticProps } from 'next';
 
 import confetti from 'canvas-confetti'
 
+import { Layout } from '../../components/layouts';
 
-import { Layout } from "../../components/layouts"
-import { Pokemon } from "../../interfaces"
-import { pokeApi } from "../../api"
-import { getPokemonInfo, localFavorites } from "../../utils";
-
+import { Pokemon } from '../../interfaces';
+import { getPokemonInfo, localFavorites } from '../../utils';
+import { pokeApi } from '../../api';
+import { PokemonListResponse } from '../../interfaces/pokemon-list';
 
 
 interface Props {
     pokemon: Pokemon
 }
 
-
-const PokemonPage: NextPage<Props> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {    
+    
 
     const [isFavorite, setIsFavorite] = useState<boolean>( false )
     
@@ -47,8 +47,9 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
         }
     }
 
+
     return (
-        <Layout title={ pokemon.name } >
+        <Layout title={pokemon.name} >
             <Grid.Container css={{ marginTop: '5px' }} gap={2}>
                 <Grid xs={12} sm={4}>
                     <Card isHoverable css={{ padding: '30px' }}>
@@ -69,10 +70,10 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                         <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Text h1 transform="capitalize">{pokemon.name}</Text>
                             <Button
-                                ghost={ !isFavorite }
-                                onPress={onToggleFavorite} 
+                                ghost={!isFavorite}
+                                onPress={onToggleFavorite}
                                 color="gradient">
-                                { !isFavorite ? 'Guardar en favoritos' : 'Remover de favoritos' }
+                                {!isFavorite ? 'Guardar en favoritos' : 'Remover de favoritos'}
                             </Button>
                         </Card.Header>
                         <Card.Body>
@@ -107,35 +108,26 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
     )
 }
 
-
-
-// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
-
-
-
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-    const pokemons151 = [...Array(151)].map((value, index) => ({ params: { id: `${index + 1}` } }))
+    const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`)    
+    const pokemonsNames = data.results.map( pokemon => ({ params: { name: `${ pokemon.name }` } }))
 
     return {
-        paths: pokemons151,
+        paths: pokemonsNames,
         fallback: false
     }
 }
 
-
-
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
-    const { id } = params as { id: string }
+    const { name } = params as { name: string }
 
     return {
         props: {
-            pokemon: ( await getPokemonInfo(id) )
+            pokemon: ( await getPokemonInfo( name ) )
         }
     }
 }
 
-
-
-export default PokemonPage
+export default PokemonByNamePage

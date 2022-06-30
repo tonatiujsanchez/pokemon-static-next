@@ -15,6 +15,7 @@ export const NotFavorites = () => {
                 src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg"
                 width={150}
                 height={150}
+                alt="Pikachu"
 
             />
             <Text h2>No hay favoritos</Text>

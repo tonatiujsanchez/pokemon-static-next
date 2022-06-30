@@ -5,12 +5,12 @@ import { SmallPokemon } from '../../interfaces/pokemon-list';
 
 
 
-export const PokemonCard: FC<SmallPokemon> = ({ id, name, img, url }) => {
+export const PokemonCard: FC<SmallPokemon> = ({ id, name, img }) => {
 
     const router =  useRouter()
 
     const mouseEventHandler = () => {        
-        router.push(`/pokemon/${id}`)
+        router.push(`/name/${name}`)
     }
 
     return (

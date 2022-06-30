@@ -26,6 +26,7 @@ export const FavoritesPokemonsCard: FC<Props> = ({ idPoke }) => {
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${idPoke}.svg`}
                     width={'100%'}
                     height={120}
+                    alt="Imagen de Pokemon"
                 />
             </Card>
         </Grid>
