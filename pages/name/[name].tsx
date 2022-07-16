@@ -17,27 +17,27 @@ interface Props {
     pokemon: Pokemon
 }
 
-const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {    
-    
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
 
-    const [isFavorite, setIsFavorite] = useState<boolean>( false )
-    
-    useEffect(()=>{
-        setIsFavorite(localFavorites.pokemonIsFavorite( pokemon.id ))
-    },[])
-    
-    
+
+    const [isFavorite, setIsFavorite] = useState<boolean>(false)
+
+    useEffect(() => {
+        setIsFavorite(localFavorites.pokemonIsFavorite(pokemon.id))
+    }, [])
+
+
     const onToggleFavorite = () => {
-        localFavorites.toogleFavorites ( pokemon.id )
+        localFavorites.toogleFavorites(pokemon.id)
         setIsFavorite(!isFavorite)
 
-        if(!isFavorite){
+        if (!isFavorite) {
             confetti({
                 zIndex: 999,
                 spread: 127,
                 angle: -150,
                 particleCount: Math.floor(200 * 3),
-                origin:{
+                origin: {
                     x: 1,
                     y: 0
                 },
@@ -110,12 +110,13 @@ const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-    const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`)    
-    const pokemonsNames = data.results.map( pokemon => ({ params: { name: `${ pokemon.name }` } }))
+    const { data } = await pokeApi.get<PokemonListResponse>(`/pokemon?limit=151`)
+    const pokemonsNames = data.results.map(pokemon => ({ params: { name: `${pokemon.name}` } }))
 
     return {
         paths: pokemonsNames,
-        fallback: false
+        // fallback: false,
+        fallback: 'blocking',
     }
 }
 
@@ -123,10 +124,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     const { name } = params as { name: string }
 
+    const pokemon = await getPokemonInfo(name)
+
+    if (!pokemon) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
+
     return {
         props: {
-            pokemon: ( await getPokemonInfo( name ) )
-        }
+            pokemon
+        },
+        revalidate: 86400,
     }
 }
 

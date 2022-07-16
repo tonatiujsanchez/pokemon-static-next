@@ -33,7 +33,9 @@ export const Layout: FC<Props> = ({ children, title }) => {
                 <meta property="og:image"       content={`${origin}/img/pokemon-banner.jpg`} />
             </Head>
 
-            <Navbar />
+            <header>
+                <Navbar />
+            </header>
 
             <main style={{
                 padding: '0 20px',
